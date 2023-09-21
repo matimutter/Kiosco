@@ -1,5 +1,5 @@
-# kioskbox
-Sistema simple para la gestión de caja en kioscos.
+# KioStore
+Es un sistema simple para la gestión de caja en kioscos y negocios similares.
 
 Permite registrar ventas, movimientos de caja, asi como el horario y salario de empleados.
 Es una aplicación sencilla que permite vender los productos registrados en el sistema, sin la necesidad de tener stockeado el total de la mercancia ya que para un comercio pequeño es inviable o innecesaria realizar esta tarea por diversos motivos.
