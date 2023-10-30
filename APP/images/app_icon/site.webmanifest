@@ -1,0 +1,20 @@
+{
+    "name": "Kiosco",
+    "short_name": "Kiosco",
+    "icons": [
+        {
+            "src": "/images/app_icon/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/app_icon/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#008a51",
+    "background_color": "#008a51",
+    "start_url": "Kiosco",
+    "display": "standalone"
+}
