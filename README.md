@@ -1,4 +1,4 @@
-# KioStore
+# Kiosco
 Es un sistema simple para la gestión de caja en kioscos y negocios similares.
 
 Permite registrar ventas, movimientos de caja, asi como el horario y salario de empleados.
