@@ -6,11 +6,13 @@ CREATE TABLE IF NOT EXISTS usuario (
     clave VARCHAR(30) NOT NULL,
     ci INT(8) UNSIGNED,
     nombre VARCHAR(45),
-    -- apellido VARCHAR(45),
-    es_admin BOOLEAN,
-    
-    -- actividad TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP () ON UPDATE CURRENT_TIMESTAMP (),
-    PRIMARY KEY (`usuario_id`)
+	apellido VARCHAR(45),
+    es_admin BOOLEAN NOT NULL,
+    salario_por_hora DECIMAL(15,2),
+    ultima_actividad TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP () ON UPDATE CURRENT_TIMESTAMP (),
+    deshabilitado BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (`id`),
+    UNIQUE 
 );
 
 CREATE TABLE IF NOT EXISTS producto (
