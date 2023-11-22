@@ -1,26 +1,28 @@
-create database if not exists kioskbox;
-use kioskbox;
+create database if not exists kioscoDB;
+use kioscoDB;
 
-create table if not exists usuario(
-usuario_id varchar(20) NOT NULL UNIQUE, -- la id es una cadena de texto unica
-clave varchar(30) NOT NULL,
-ci int(8) UNSIGNED,
-nombre varchar(45),
-apellido varchar(45),
-actividad timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-PRIMARY KEY (`usuario_id`)
+CREATE TABLE IF NOT EXISTS usuario (
+    id VARCHAR(20) NOT NULL UNIQUE,
+    clave VARCHAR(30) NOT NULL,
+    ci INT(8) UNSIGNED,
+    nombre VARCHAR(45),
+    -- apellido VARCHAR(45),
+    es_admin BOOLEAN,
+    
+    -- actividad TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP () ON UPDATE CURRENT_TIMESTAMP (),
+    PRIMARY KEY (`usuario_id`)
 );
 
-create table if not exists producto(
-prducto_id smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-nombre varchar(30),
-detalle varchar(50),
-categoria varchar(20),
-precio decimal(5,2) NOT NULL,
-proveedor varchar(10)
+CREATE TABLE IF NOT EXISTS producto (
+    prducto_id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(30),
+    detalle VARCHAR(50),
+    categoria VARCHAR(20),
+    precio DECIMAL(5 , 2 ) NOT NULL,
+    proveedor VARCHAR(10)
 );
 
-create table if not exists producto_categoria(
-categoria_nombre varchar(20) NOT NULL UNIQUE, -- la id es un nombre de categoria unico
-PRIMARY KEY (`categoria_nombre`)
+CREATE TABLE IF NOT EXISTS producto_categoria (
+    categoria_nombre VARCHAR(20) NOT NULL UNIQUE,
+    PRIMARY KEY (`categoria_nombre`)
 );
