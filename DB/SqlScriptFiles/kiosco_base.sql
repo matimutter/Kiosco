@@ -1,18 +1,27 @@
+drop database if exists kioscoDB;
 create database if not exists kioscoDB;
 use kioscoDB;
 
-CREATE TABLE IF NOT EXISTS usuario (
-    id VARCHAR(20) NOT NULL UNIQUE,
-    clave VARCHAR(30) NOT NULL,
-    ci INT(8) UNSIGNED,
-    nombre VARCHAR(45),
-	apellido VARCHAR(45),
-    es_admin BOOLEAN NOT NULL,
-    salario_por_hora DECIMAL(15,2),
-    ultima_actividad TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP () ON UPDATE CURRENT_TIMESTAMP (),
-    deshabilitado BOOLEAN DEFAULT FALSE,
-    PRIMARY KEY (`id`),
-    UNIQUE 
+CREATE TABLE IF NOT EXISTS `usuario` (
+    `id` VARCHAR(20) NOT NULL UNIQUE,
+    `clave` VARCHAR(30) NOT NULL,
+    `ci` INT(8) UNSIGNED,
+    `nombre` VARCHAR(45),
+	`apellido` VARCHAR(45),
+    `es_admin` BOOLEAN NOT NULL,
+    `salario_por_hora` DECIMAL(15,2),
+    `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP () ON UPDATE CURRENT_TIMESTAMP (),
+    `deshabilitado` BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (`id`)
+    -- CONSTRAINT dsf 
+    -- UNIQUE(sdfsdf,sdfsdf,Rfg)
+);
+
+CREATE TABLE IF NOT EXISTS `usuario_tel` (
+	`id` VARCHAR(20) NOT NULL,
+    `telefono` VARCHAR(20) NOT NULL,
+    PRIMARY KEY (`id`, `telefono`),
+    CONSTRAINT `fk_usuario_id`FOREIGN KEY (`id`) REFERENCES `usuario` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS producto (
