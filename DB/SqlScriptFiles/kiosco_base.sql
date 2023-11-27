@@ -26,7 +26,10 @@ CREATE TABLE IF NOT EXISTS `usuario_tel` (
 );
 
 CREATE TABLE IF NOT EXISTS `horario` (
-	`dia` ENUM('L','M','X','J','V','S','D') NOT NULL
+	`dia` ENUM('L','M','X','J','V','S','D') NOT NULL,
+    `inicio_turno` TIME NOT NULL,
+    `fin_turno` TIME NOT NULL CHECK (`fin_turno`>`inicio_turno`),
+    `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP () ON UPDATE CURRENT_TIMESTAMP ()
     );
 
 CREATE TABLE IF NOT EXISTS producto (
