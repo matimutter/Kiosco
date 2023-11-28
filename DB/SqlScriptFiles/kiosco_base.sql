@@ -21,16 +21,26 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 CREATE TABLE IF NOT EXISTS `usuario_tel` (
 	`id_usuario` SMALLINT NOT NULL,
     `telefono` VARCHAR(20) NOT NULL,
-    PRIMARY KEY (`id_usuario`, `telefono`),
-    CONSTRAINT `fk_usuario_id`FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)  ON UPDATE CASCADE ON DELETE CASCADE
+    PRIMARY KEY (`id_usuario`,`telefono`),
+    CONSTRAINT `fk_id_usuario`FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)  ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `horario` (
 	`dia` ENUM('L','M','X','J','V','S','D') NOT NULL,
     `inicio_turno` TIME NOT NULL CHECK (`inicio_turno`<`fin_turno`),
     `fin_turno` TIME NOT NULL CHECK (`fin_turno`>`inicio_turno`),
-    `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP () ON UPDATE CURRENT_TIMESTAMP ()
+    `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP () ON UPDATE CURRENT_TIMESTAMP (),
+    PRIMARY KEY (`dia`,`inicio_turno`,`fin_turno`)
 );
+
+CREATE TABLE IF NOT EXISTS `asigna` (
+	`id_usuario` SMALLINT NOT NULL,
+	`dia` ENUM('L','M','X','J','V','S','D') NOT NULL,
+    `inicio_turno` TIME NOT NULL CHECK (`inicio_turno`<`fin_turno`),
+    `fin_turno` TIME NOT NULL CHECK (`fin_turno`>`inicio_turno`),
+);
+
+
 
 CREATE TABLE IF NOT EXISTS producto (
     prducto_id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
