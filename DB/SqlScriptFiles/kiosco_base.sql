@@ -39,18 +39,19 @@ CREATE TABLE IF NOT EXISTS `asigna` (
 	`id_usuario` SMALLINT UNSIGNED NOT NULL,
     PRIMARY KEY (`id_turno`,`id_usuario`),
     CONSTRAINT `fk_id_turno_asigna` FOREIGN KEY (`id_turno`) REFERENCES `turno`(`id_turno`) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT `fk_id_usuario_asigna` FOREIGN KEY (`id_usuario`) REFERENCES `usuario`(`id_usuario`) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT `fk_id_usuario_asigna` FOREIGN KEY (`id_usuario`) REFERENCES `usuario`(`id_usuario`) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT `key_asigna_unico` UNIQUE (`id_turno`,`id_usuario`)
 );
 
 CREATE TABLE IF NOT EXISTS `balance` (
 	`id_balance` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `fecha_inicio` DATETIME NOT NULL,
+    `fecha_inicio` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `fecha_cierre` DATETIME,
 	`salida` DECIMAL(15,2) NOT NULL,
     `entrada` DECIMAL(15,2) NOT NULL,
     `nota` VARCHAR(120),
-    `estado` 
+    `estado` ENUM('ABIERTO','CERRADO','PENDIENTE','ANULADO') NOT NULL,
+    PRIMARY KEY (`id_balance`),
     CONSTRAINT `chk_fecha_i_balance` CHECK (`fecha_inicio`<`fecha_cierre`)
 );
 
