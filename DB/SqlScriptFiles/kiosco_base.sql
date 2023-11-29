@@ -27,11 +27,12 @@ CREATE TABLE IF NOT EXISTS `usuario_tel` (
 CREATE TABLE IF NOT EXISTS `turno` (
 	`id_turno` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`dia` ENUM('L','M','X','J','V','S','D') NOT NULL,
-    `inicio_turno` TIME NOT NULL CHECK (`inicio_turno`<`fin_turno`),
-    `fin_turno` TIME NOT NULL CHECK (`fin_turno`>`inicio_turno`),
-    `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `inicio_turno` TIME NOT NULL,
+    `fin_turno` TIME NOT NULL,
+    `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id_turno`),
-    CONSTRAINT `key_turno_unico` UNIQUE (`dia`,`inicio_turno`,`fin_turno`)
+    CONSTRAINT `key_unico_turno` UNIQUE (`dia`,`inicio_turno`,`fin_turno`),
+    CONSTRAINT `chk_turno` CHECK (`fin_turno`>`inicio_turno`)
 );
 
 CREATE TABLE IF NOT EXISTS `asigna` (
@@ -45,15 +46,18 @@ CREATE TABLE IF NOT EXISTS `asigna` (
 
 CREATE TABLE IF NOT EXISTS `balance` (
 	`id_balance` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `fecha_inicio` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_inicio` DATETIME NOT NULL,
     `fecha_cierre` DATETIME,
 	`salida` DECIMAL(15,2) NOT NULL,
     `entrada` DECIMAL(15,2) NOT NULL,
     `nota` VARCHAR(120),
     `estado` ENUM('ABIERTO','CERRADO','PENDIENTE','ANULADO') NOT NULL,
+    `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id_balance`),
-    CONSTRAINT `chk_fecha_i_balance` CHECK (`fecha_inicio`<`fecha_cierre`)
+    CONSTRAINT `chk_fecha_i_balance` CHECK (`fecha_inicio`<`fecha_cierre` OR `fecha_cierre` IS NULL)
 );
+
+
 
 
 CREATE TABLE IF NOT EXISTS producto (
