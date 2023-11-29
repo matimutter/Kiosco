@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS `usuario_tel` (
 	`id_usuario` SMALLINT UNSIGNED NOT NULL,
     `telefono` VARCHAR(20) NOT NULL,
     PRIMARY KEY (`id_usuario`,`telefono`),
-    CONSTRAINT `fk_id_usuario_tel`FOREIGN KEY (`id_usuario`) REFERENCES `usuario`(`id_usuario`)  ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT `fk_id_usuario_tel`FOREIGN KEY (`id_usuario`) REFERENCES `usuario`(`id_usuario`)  ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT `key_tel_unico` UNIQUE (`id_usuario`,`telefono`)
 );
 
 CREATE TABLE IF NOT EXISTS `turno` (
@@ -39,8 +40,19 @@ CREATE TABLE IF NOT EXISTS `asigna` (
     PRIMARY KEY (`id_turno`,`id_usuario`),
     CONSTRAINT `fk_id_turno_asigna` FOREIGN KEY (`id_turno`) REFERENCES `turno`(`id_turno`) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT `fk_id_usuario_asigna` FOREIGN KEY (`id_usuario`) REFERENCES `usuario`(`id_usuario`) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT `key_asigna_unico` UNIQUE (`id_turno`,`id_usuario`)
 );
 
+CREATE TABLE IF NOT EXISTS `balance` (
+	`id_balance` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `fecha_inicio` DATETIME NOT NULL,
+    `fecha_cierre` DATETIME,
+	`salida` DECIMAL(15,2) NOT NULL,
+    `entrada` DECIMAL(15,2) NOT NULL,
+    `nota` VARCHAR(120),
+    `estado` 
+    CONSTRAINT `chk_fecha_i_balance` CHECK (`fecha_inicio`<`fecha_cierre`)
+);
 
 
 CREATE TABLE IF NOT EXISTS producto (
