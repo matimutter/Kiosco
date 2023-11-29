@@ -3,7 +3,7 @@ create database if not exists kioscoDB;
 use kioscoDB;
 
 CREATE TABLE IF NOT EXISTS `usuario` (
-    `id_usuario` SMALLINT NOT NULL AUTO_INCREMENT,
+    `id_usuario` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`usuario` VARCHAR(20) NOT NULL UNIQUE,
     `clave` VARCHAR(30) NOT NULL,
     `ci` INT(8) UNSIGNED,
@@ -11,33 +11,34 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 	`apellido` VARCHAR(45),
     `es_admin` BOOLEAN NOT NULL,
     `salario_por_hora` DECIMAL(15,2) NOT NULL,
-    `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP () ON UPDATE CURRENT_TIMESTAMP (),
+    `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deshabilitado` BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (`id_usuario`)
-    -- CONSTRAINT dsf 
-    -- UNIQUE(sdfsdf,sdfsdf,Rfg)
 );
 
 CREATE TABLE IF NOT EXISTS `usuario_tel` (
-	`id_usuario` SMALLINT NOT NULL,
+	`id_usuario` SMALLINT UNSIGNED NOT NULL,
     `telefono` VARCHAR(20) NOT NULL,
     PRIMARY KEY (`id_usuario`,`telefono`),
-    CONSTRAINT `fk_id_usuario`FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)  ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT `fk_id_usuario_tel`FOREIGN KEY (`id_usuario`) REFERENCES `usuario`(`id_usuario`)  ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS `horario` (
+CREATE TABLE IF NOT EXISTS `turno` (
+	`id_turno` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`dia` ENUM('L','M','X','J','V','S','D') NOT NULL,
     `inicio_turno` TIME NOT NULL CHECK (`inicio_turno`<`fin_turno`),
     `fin_turno` TIME NOT NULL CHECK (`fin_turno`>`inicio_turno`),
-    `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP () ON UPDATE CURRENT_TIMESTAMP (),
-    PRIMARY KEY (`dia`,`inicio_turno`,`fin_turno`)
+    `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id_turno`),
+    CONSTRAINT `key_turno_unico` UNIQUE (`dia`,`inicio_turno`,`fin_turno`)
 );
 
 CREATE TABLE IF NOT EXISTS `asigna` (
-	`id_usuario` SMALLINT NOT NULL,
-	`dia` ENUM('L','M','X','J','V','S','D') NOT NULL,
-    `inicio_turno` TIME NOT NULL CHECK (`inicio_turno`<`fin_turno`),
-    `fin_turno` TIME NOT NULL CHECK (`fin_turno`>`inicio_turno`),
+	`id_turno` TINYINT UNSIGNED NOT NULL,
+	`id_usuario` SMALLINT UNSIGNED NOT NULL,
+    PRIMARY KEY (`id_turno`,`id_usuario`),
+    CONSTRAINT `fk_id_turno_asigna` FOREIGN KEY (`id_turno`) REFERENCES `turno`(`id_turno`) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT `fk_id_usuario_asigna` FOREIGN KEY (`id_usuario`) REFERENCES `usuario`(`id_usuario`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
