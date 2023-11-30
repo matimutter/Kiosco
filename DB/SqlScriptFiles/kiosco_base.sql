@@ -57,8 +57,17 @@ CREATE TABLE IF NOT EXISTS `balance` (
     CONSTRAINT `chk_fecha_i_balance` CHECK (`fecha_inicio`<`fecha_cierre` OR `fecha_cierre` IS NULL)
 );
 
-
-
+CREATE TABLE IF NOT EXISTS `jornada` (
+	`fecha` DATE NOT NULL,
+    `hora_entrada` TIME NOT NULL,
+    `hora_salida` TIME,
+    `id_balance` SMALLINT UNSIGNED NOT NULL,
+    `id_usuario` SMALLINT UNSIGNED NOT NULL,
+    `paga_del_dia` DECIMAL(15,2) NOT NULL,
+    `detalle` VARCHAR(120),
+    PRIMARY KEY (`fecha`,`hora_entrada`,`hora_salida`),
+    CONSTRAINT `key_jornada_unica` UNIQUE (`fecha`,`hora_entrada`,`hora_salida`),
+    
 
 CREATE TABLE IF NOT EXISTS producto (
     prducto_id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
