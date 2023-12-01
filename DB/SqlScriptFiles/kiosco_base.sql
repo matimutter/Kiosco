@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `usuario_tel` (
 
 CREATE TABLE IF NOT EXISTS `turno` (
 	`id_turno` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`dia` ENUM('L','M','X','J','V','S','D') NOT NULL,
+	`dia` ENUM('Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo') NOT NULL,
     `inicio_turno` TIME NOT NULL,
     `fin_turno` TIME NOT NULL,
     `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `balance` (
 );
 
 CREATE TABLE IF NOT EXISTS `jornada` (
+	`id_jornada` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`fecha` DATE NOT NULL,
     `hora_entrada` TIME NOT NULL,
     `hora_salida` TIME,
@@ -65,20 +66,27 @@ CREATE TABLE IF NOT EXISTS `jornada` (
     `id_usuario` SMALLINT UNSIGNED NOT NULL,
     `paga_del_dia` DECIMAL(15,2) NOT NULL,
     `detalle` VARCHAR(120),
-    PRIMARY KEY (`fecha`,`hora_entrada`,`hora_salida`),
-    CONSTRAINT `key_jornada_unica` UNIQUE (`fecha`,`hora_entrada`,`hora_salida`),
-    
-
-CREATE TABLE IF NOT EXISTS producto (
-    prducto_id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(30),
-    detalle VARCHAR(50),
-    categoria VARCHAR(20),
-    precio DECIMAL(5 , 2 ) NOT NULL,
-    proveedor VARCHAR(10)
+    PRIMARY KEY (`id_jornada`),
+    CONSTRAINT `fk_id_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `asigna`(`id_usuario`) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT `fk_id_balance` FOREIGN KEY (`id_usuario`) REFERENCES `balance`(`id_balance`) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT `key_jornada_unica` UNIQUE (`fecha`,`hora_entrada`,`hora_salida`)
 );
 
-CREATE TABLE IF NOT EXISTS producto_categoria (
-    categoria_nombre VARCHAR(20) NOT NULL UNIQUE,
-    PRIMARY KEY (`categoria_nombre`)
+CREATE TABLE IF NOT EXISTS `categoria` (
+	`nombre_categoria` VARCHAR(30) NOT NULL PRIMARY KEY
 );
+
+CREATE TABLE IF NOT EXISTS `producto` (
+	`id_producto` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `codigo` VARCHAR(30) NOT NULL,
+    `nombre` VARCHAR(60) NOT NULL,
+    `categoria` VARCHAR(30),
+    `precio_venta` DECIMAL(15,2) UNSIGNED NOT NULL,
+    `unidades` SMALLINT UNSIGNED,
+    `fecha_terminado` DATETIME,
+    `reponer` BOOLEAN DEFAULT FALSE,
+    `estado` ENUM('Alta','Baja','Extraviado') DEFAULT 'Alta' NOT NULL,
+    PRIMARY KEY (`id_producto`),
+    CONSTRAINT `fk_categoria_producto` FOREIGN KEY (`categoria`) REFERENCES `categoria`(`nombre_categoria`) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
