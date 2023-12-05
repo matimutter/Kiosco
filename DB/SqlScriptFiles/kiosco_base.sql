@@ -185,12 +185,12 @@ CREATE TABLE `deuda` (
 CREATE TABLE `entrada_salida` (
     `id_ent_sal` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `id_balance` SMALLINT UNSIGNED NOT NULL,
-    `fecha` DATE NOT NULL,
+    `fecha` DATETIME NOT NULL,
     `concepto` VARCHAR(30) NOT NULL,
     `tipo` ENUM('ENTRADA', 'SALIDA') NOT NULL,
     `monto` DECIMAL(15, 2) NOT NULL,
     `detalle` VARCHAR(200),
     `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id_ent_sal`),
-    FOREIGN KEY (`id_balance`) REFERENCES Balance(`id_balance`)
+    FOREIGN KEY (`id_balance`) REFERENCES `balance`(`id_balance`)
 );
