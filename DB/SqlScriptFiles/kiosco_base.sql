@@ -13,8 +13,10 @@ CREATE TABLE IF NOT EXISTS `usuario` (
     `salario_por_hora` DECIMAL(15 , 2 ) NOT NULL,
     `deshabilitado` BOOLEAN NOT NULL DEFAULT FALSE,
     `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id_usuario`)
-);
+    PRIMARY KEY (`id_usuario`),
+    INDEX `idx_usuario` (`usuario`) USING BTREE,
+    INDEX `idx_login` (`usuario`,`clave`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `usuario_tel` (
     `id_usuario` SMALLINT UNSIGNED NOT NULL,
@@ -24,8 +26,9 @@ CREATE TABLE IF NOT EXISTS `usuario_tel` (
     CONSTRAINT `fk_id_usuario_tel` FOREIGN KEY (`id_usuario`)
         REFERENCES `usuario` (`id_usuario`)
         ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT `key_tel_unico` UNIQUE (`id_usuario` , `telefono`)
-);
+    CONSTRAINT `key_tel_unico` UNIQUE (`id_usuario` , `telefono`),
+    INDEX `idx_id_usuario` (`id_usuario`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `turno` (
     `id_turno` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -35,8 +38,9 @@ CREATE TABLE IF NOT EXISTS `turno` (
     `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id_turno`),
     CONSTRAINT `key_unico_turno` UNIQUE (`dia` , `inicio_turno` , `fin_turno`),
-    CONSTRAINT `chk_turno` CHECK (`fin_turno` > `inicio_turno`)
-);
+    CONSTRAINT `chk_turno` CHECK (`fin_turno` > `inicio_turno`),
+    INDEX `idx_dia_inicio_turno` (`dia`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `asigna` (
     `id_turno` TINYINT UNSIGNED NOT NULL,
@@ -49,8 +53,9 @@ CREATE TABLE IF NOT EXISTS `asigna` (
     CONSTRAINT `fk_id_usuario_asigna` FOREIGN KEY (`id_usuario`)
         REFERENCES `usuario` (`id_usuario`)
         ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT `key_asigna_unico` UNIQUE (`id_turno` , `id_usuario`)
-);
+    CONSTRAINT `key_asigna_unico` UNIQUE (`id_turno` , `id_usuario`),
+    INDEX `idx_id_usuario` (`id_usuario`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `balance` (
     `id_balance` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -63,8 +68,10 @@ CREATE TABLE IF NOT EXISTS `balance` (
     `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id_balance`),
     CONSTRAINT `chk_fecha_i_balance` CHECK (`fecha_inicio` < `fecha_cierre`
-        OR `fecha_cierre` IS NULL)
-);
+        OR `fecha_cierre` IS NULL),
+    INDEX `idx_fecha_inicio_cierre` (`fecha_inicio`,`fecha_cierre`) USING BTREE,
+    INDEX `idx_estado` (`estado`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `jornada` (
     `id_jornada` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -83,14 +90,15 @@ CREATE TABLE IF NOT EXISTS `jornada` (
     CONSTRAINT `fk_id_balance` FOREIGN KEY (`id_balance`)
         REFERENCES `balance` (`id_balance`)
         ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT `key_jornada_unica` UNIQUE (`fecha` , `hora_entrada` , `hora_salida`)
-);
+    CONSTRAINT `key_jornada_unica` UNIQUE (`fecha` , `hora_entrada` , `hora_salida`),
+    INDEX `idx_fecha` (`fecha`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `categoria` (
     `nombre_categoria` VARCHAR(30) NOT NULL UNIQUE,
     `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`nombre_categoria`)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `producto` (
     `id_producto` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -106,8 +114,11 @@ CREATE TABLE IF NOT EXISTS `producto` (
     PRIMARY KEY (`id_producto`),
     CONSTRAINT `fk_categoria_producto` FOREIGN KEY (`categoria`)
         REFERENCES `categoria` (`nombre_categoria`)
-        ON UPDATE CASCADE ON DELETE CASCADE
-);
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    INDEX `idx_codigo` (`codigo`) USING BTREE,
+    INDEX `idx_nombre` (`nombre`) USING BTREE,
+    INDEX `idx_estado` (`estado`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `boleta` (
     `id_boleta` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -120,8 +131,9 @@ CREATE TABLE IF NOT EXISTS `boleta` (
     PRIMARY KEY (`id_boleta`),
     CONSTRAINT `fk_id_usuario_boleta` FOREIGN KEY (`id_usuario`)
         REFERENCES `usuario` (`id_usuario`)
-        ON UPDATE CASCADE
-);
+        ON UPDATE CASCADE,
+    INDEX `idx_fecha` (`fecha`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `venta` (
     `id_boleta` INT UNSIGNED NOT NULL,
@@ -137,40 +149,45 @@ CREATE TABLE IF NOT EXISTS `venta` (
 	CONSTRAINT `fk_id_producto_venta` FOREIGN KEY (`id_producto`)
 		REFERENCES `producto`(`id_producto`),
     CONSTRAINT `fk_id_balance_venta` FOREIGN KEY (`id_balance`)
-        REFERENCES `balance` (`id_balance`)
-);
+        REFERENCES `balance` (`id_balance`),
+    INDEX `idx_id_boleta` (`id_boleta`) USING BTREE,
+    INDEX `idx_ultima_actividad` (`ultima_actividad`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `proveedor` (
-    `proveedor` VARCHAR(30) NOT NULL UNIQUE,
+    `nombre_proveedor` VARCHAR(30) NOT NULL UNIQUE,
     `nota` VARCHAR(200),
     `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`proveedor`)
-);
+    PRIMARY KEY (`nombre_proveedor`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `proveedor_tel`(
-    `proveedor` VARCHAR(30),
+    `nombre_proveedor` VARCHAR(30),
     `telefono` VARCHAR(20),
     `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`proveedor`, `telefono`),
-    FOREIGN KEY (`proveedor`) REFERENCES `proveedor`(`proveedor`)
-);
+    PRIMARY KEY (`nombre_proveedor`, `telefono`),
+    FOREIGN KEY (`nombre_proveedor`) REFERENCES `proveedor`(`nombre_proveedor`),
+    INDEX `idx_nombre_proveedor` (`nombre_proveedor`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `provee` (
     `id_producto` INT UNSIGNED NOT NULL,
-    `proveedor` VARCHAR(30) NOT NULL UNIQUE,
+    `nombre_proveedor` VARCHAR(30) NOT NULL UNIQUE,
     `fecha_ingreso` DATE,
     `vencimiento` DATE,
     `costo_compra` DECIMAL(15 , 2 ) NOT NULL,
     `precio_sugerido` DECIMAL(15 , 2 ),
     `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id_producto`, `proveedor`),
+    PRIMARY KEY (`id_producto`, `nombre_proveedor`),
     FOREIGN KEY (`id_producto`) REFERENCES `producto`(`id_producto`),
-    FOREIGN KEY (`proveedor`) REFERENCES `proveedor`(`proveedor`)
-);
+    FOREIGN KEY (`nombre_proveedor`) REFERENCES `proveedor`(`nombre_proveedor`),
+    INDEX `idx_nombre_proveedor_fecha_ingreso` (`nombre_proveedor`,`fecha_ingreso`) USING BTREE,
+    INDEX `idx_nombre_proveedor_id_producto` (`nombre_proveedor`,`id_producto`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `deuda` (
     `fecha` DATE,
-    `nombre` VARCHAR(20),
+    `nombre` VARCHAR(30),
     `id_boleta` INT UNSIGNED NOT NULL,
 	`id_balance` SMALLINT UNSIGNED NOT NULL,
     `monto` DECIMAL(15, 2),
@@ -179,8 +196,11 @@ CREATE TABLE `deuda` (
     `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`fecha`, `nombre`),
     FOREIGN KEY (`id_boleta`) REFERENCES `boleta`(`id_boleta`),
-    FOREIGN KEY (`id_balance`) REFERENCES `balance`(`id_balance`)
-);
+    FOREIGN KEY (`id_balance`) REFERENCES `balance`(`id_balance`),
+    INDEX `idx_nombre` (`nombre`) USING BTREE,
+    INDEX `idx_id_balance` (`id_balance`) USING BTREE,
+    INDEX `idx_monto` (`monto`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `entrada_salida` (
     `id_ent_sal` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -192,5 +212,7 @@ CREATE TABLE `entrada_salida` (
     `detalle` VARCHAR(200),
     `ultima_actividad` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id_ent_sal`),
-    FOREIGN KEY (`id_balance`) REFERENCES `balance`(`id_balance`)
-);
+    FOREIGN KEY (`id_balance`) REFERENCES `balance`(`id_balance`),
+    INDEX `idx_id_balance` (`id_balance`) USING BTREE,
+    INDEX `idx_tipo` (`tipo`) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
